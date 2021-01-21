@@ -13,6 +13,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private SecurityService securityService;
+    @Autowired
+    private AuthSuccessHandler successHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -28,7 +30,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .loginPage("/login")
-                .defaultSuccessUrl("/welcome")
+//                .defaultSuccessUrl("/welcome")
+                .successHandler(successHandler)
                 .failureUrl("/login?error=true")
                 .permitAll()
                 .and()
