@@ -1,5 +1,7 @@
 package com.ticketing.config;
 
+import com.ticketing.service.SecurityService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -9,6 +11,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    private SecurityService securityService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -32,6 +36,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutRequestMatcher(
                         new AntPathRequestMatcher("/logout")
                 )
-                .logoutSuccessUrl("/login");
+                .logoutSuccessUrl("/login")
+                .and()
+                .rememberMe()
+                .tokenValiditySeconds(120)
+                .key("secretKey")
+                .userDetailsService(securityService);
     }
 }
