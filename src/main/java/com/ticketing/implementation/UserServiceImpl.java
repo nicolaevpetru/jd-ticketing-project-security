@@ -13,6 +13,7 @@ import com.ticketing.service.TaskService;
 import com.ticketing.service.UserService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,12 +27,14 @@ public class UserServiceImpl implements UserService {
     private ProjectService projectService;
     private TaskService taskService;
     private MapperUtil mapperUtil;
+    private PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, @Lazy ProjectService projectService, TaskService taskService, MapperUtil mapperUtil) {
+    public UserServiceImpl(UserRepository userRepository, @Lazy ProjectService projectService, TaskService taskService, MapperUtil mapperUtil, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.projectService = projectService;
         this.taskService = taskService;
         this.mapperUtil = mapperUtil;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -48,7 +51,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void save(UserDTO dto) {
+        User foundUser = userRepository.findByUserName(dto.getUserName());
+        dto.setEnabled(true);
         User obj = mapperUtil.convert(dto, new User());
+        obj.setPassWord(passwordEncoder.encode(obj.getPassWord()));
         userRepository.save(obj);
     }
 
