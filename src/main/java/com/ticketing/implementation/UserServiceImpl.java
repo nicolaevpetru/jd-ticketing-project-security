@@ -67,6 +67,7 @@ public class UserServiceImpl implements UserService {
         User convertedUser = mapperUtil.convert(dto, new User());
 
         convertedUser.setPassWord(passwordEncoder.encode(convertedUser.getPassWord()));
+        convertedUser.setEnabled(true);
 
         //set id to the converted object
         convertedUser.setId(user.getId());
